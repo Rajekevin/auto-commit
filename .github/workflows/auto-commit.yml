@@ -1,0 +1,28 @@
+name: Auto Commit
+
+on:
+  schedule:
+    - cron: '0 10 * * *' # Tous les jours à 10h UTC (12h en France)
+  workflow_dispatch: # permet de déclencher manuellement
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurer Git
+        run: |
+          git config user.name "AutoCommit Bot"
+          git config user.email "bot@users.noreply.github.com"
+
+      - name: Faire un faux changement
+        run: |
+          echo "// keep alive $(date)" >> keepalive.txt
+
+      - name: Commit et Push
+        run: |
+          git add keepalive.txt
+          git commit -m "🟢 Auto commit - $(date)"
+          git push
