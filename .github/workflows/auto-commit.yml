@@ -3,7 +3,7 @@ name: Auto Commit
 on:
   schedule:
     - cron: '0 10 * * *' # Tous les jours à 10h UTC (12h en France)
-  workflow_dispatch: # permet de déclencher manuellement
+  workflow_dispatch:
 
 jobs:
   auto-commit:
@@ -12,17 +12,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configurer Git
+      - name: Configurer Git avec ton utilisateur
         run: |
-          git config user.name "AutoCommit Bot"
-          git config user.email "bot@users.noreply.github.com"
+          git config user.name "Rajekevin"
+          git config user.email "rajekevin@hotmail.fr"
 
       - name: Faire un faux changement
         run: |
           echo "// keep alive $(date)" >> keepalive.txt
 
       - name: Commit et Push
+        env:
+          TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git add keepalive.txt
-          git commit -m "🟢 Auto commit - $(date)"
-          git push
+          git commit -m "🟢 Auto commit - $(date)" || echo "Rien à commit"
+          git push https://x-access-token:${TOKEN}@github.com/Rajekevin/auto-commit.git HEAD:main
